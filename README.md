@@ -1,4 +1,3 @@
-# trees
 space-filling tree doodle art
 
 click to reset
