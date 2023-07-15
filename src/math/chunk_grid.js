@@ -28,7 +28,7 @@ function drawFilledChunks(g){
 function tryAddSegment(seg){
     
     // check if off-screen
-    if( (seg.xr[0]<0) || (seg.yr[0]<0) || (seg.xr[1]>=1) || (seg.yr[1]>=1) ){
+    if( (seg.end<0) || (seg.end<0) || (seg.end>=1) || (seg.end>=1) ){
         return false
     }
     
@@ -83,7 +83,8 @@ function getChunkIds(seg){
         
         var midx = Math.max(ca[0],cb[0]) * global.chunkWidth
         var midy = Math.max(ca[1],cb[1]) * global.chunkWidth
-        var segy = seg.m*midx + seg.b
+        var mb = getMb(seg.start, seg.end)
+        var segy = mb.m*midx + mb.b
         var idc = _coordsToChunkId( 
             (segy>midy) == (cb[1]>ca[1]) ? 
             [ca[0],cb[1]] : [cb[0],ca[1]] )

@@ -1,25 +1,28 @@
-class SimpleTree extends Tree {
+class DoodleTree extends Tree {
     
     grow(branch){
         
+        
+        // handle doodle-tree specific member vars
         if(!( 'spiralDepth' in branch )){
             branch.spiralDepth = 0
         }
         if(!( 'spiralDir' in branch )){
             branch.spiralDir = (rand()<.5) ? -1 : 1
         }
+        if(!( 'curliness' in branch )){
+            branch.curliness = randRange(.5,1)
+        }
             
         // continue in spiral
-        var d = branch.end.sub(branch.start)
-        var angle = d.getAngle()
-        
         var turn = branch.spiralDir * this.randTurn(branch)
         
         var s = new Segment( branch.end, 
-                    branch.end.add( vp(angle+turn,global.segLen) ),
+                    branch.end.add( vp(branch.angle+turn,global.segLen) ),
                     branch.depth+1, branch.chunkIds)
-        s.spiralDepth = branch.spiralDepth + 1
+        s.spiralDepth = branch.spiralDepth
         s.spiralDir = branch.spiralDir
+        s.curliness = branch.curliness
         
         
         var result = [s]
@@ -27,16 +30,17 @@ class SimpleTree extends Tree {
             
             
         // possible spawn a new branch spiraling the opposite direction
-        var spawn = rand() < .2
+        var spawn = rand() < .3
         
         if( spawn ){
             
-            turn = -branch.spiralDir * (.2+this.randTurn(branch))
+            turn = -branch.spiralDir * this.randTurn(branch)
             s = new Segment( branch.end, 
-                        branch.end.add( vp(angle+turn,global.segLen) ),
+                        branch.end.add( vp(branch.angle+turn,global.segLen) ),
                         branch.depth+1, branch.chunkIds)
-            s.spiralDepth = Math.min( 200, branch.depth+30 )
+            s.spiralDepth = Math.min( 20, branch.spiralDepth+1 )
             s.spiralDir = -branch.spiralDir
+            s.curliness = branch.curliness
             s.forceAdd = true // override intersection check
             result.push(s)
         }
@@ -45,6 +49,6 @@ class SimpleTree extends Tree {
     }
     
     randTurn(branch){ 
-        return 1e-5 * Math.pow( branch.spiralDepth, 2 )
+        return branch.curliness * 3e-3 * randRange(.2,1) * (.03*branch.depth) * (branch.spiralDepth+3)
     }
 }

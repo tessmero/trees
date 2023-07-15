@@ -20,17 +20,19 @@ const global = {
     
     
     // growth animation delay (ms)
-    growthDelay: 20,
-    maxGrowthIterations: 20000,
+    growthDelay: 5,
+    maxGrowthIterations: 200000,
     
     //
     segLen: .002,
-    chunkWidth: .003,
+    chunkWidth: .004,
     segMargin: .002,
     
     //
     segsToDraw: null,
     iterationsDrawn: 0,
+    autoResetCountdown: 0,
+    autoResetDelay: 8000,
     
     // chunk grid
     // initialized in setup.js
@@ -41,5 +43,5 @@ const global = {
 
     
     //debug
-    debugPoint: v(0,0),
+    //debugPoint: v(0,0),
 }

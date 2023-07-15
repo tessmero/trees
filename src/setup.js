@@ -14,27 +14,61 @@ function init() {
     global.filledChunks = new Array(global.nChunks);
     //var filledChunks = new Set()
     
+    resetGame()
+    requestAnimationFrame(gameLoop);
+}
+
+
+function resetGame(){
+    resetRand(hard=true)
+    global.autoResetCountdown = global.autoResetDelay
+    global.t = 0
+    global.iterationsDrawn = 0
+    global.segsToDraw = []
+    global.filledChunks.fill(false)      
+    fitToContainer()
+    placeStartingSegs()
+}
+
+// clear any axisting line segments
+// place line segments around the outer edge
+// pointing inwards
+function placeStartingSegs() {
+        
+    
+    var startr = [.1,.3]
+    var stepr = [.2,.5]
     
     global.segsToDraw = []
-    
-    var x = randRange(.1,.3)
-    var y = .75
+    var distFromEdge = .01
+    var x = randRange(...startr)
+    var y = 1-distFromEdge
     while( x < .8 ){
         global.segsToDraw.push(new Segment( v(x,y), v(x+1e-7,y-global.segLen) ))
-        x += randRange(.1,.2)
+        x += randRange(...stepr)
     }
     
-    var x = randRange(.1,.3)
-    var y = .25
+    var x = randRange(...startr)
+    var y = distFromEdge
     while( x < .8 ){
         global.segsToDraw.push(new Segment( v(x,y), v(x+1e-7,y+global.segLen) ))
         x += randRange(.1,.2)
     }
     
-    fitToContainer()
-    requestAnimationFrame(gameLoop);
+    var y = randRange(...startr)
+    var x = 1-distFromEdge
+    while( y < .8 ){
+        global.segsToDraw.push(new Segment( v(x,y), v(x-global.segLen,y+1e-7) ))
+        y += randRange(...stepr)
+    }
+    
+    var y = randRange(...startr)
+    var x = distFromEdge
+    while( y < .8 ){
+        global.segsToDraw.push(new Segment( v(x,y), v(x+global.segLen,y+1e-7) ))
+        y += randRange(...stepr)
+    }
 }
-
 
 function fitToContainer(){
     
@@ -43,9 +77,9 @@ function fitToContainer(){
   cvs.style.height='100%';  
   cvs.width  = cvs.offsetWidth;
   cvs.height = cvs.offsetHeight;
-  
     
-    var dimension = Math.max(cvs.width, cvs.height);
+    var padding = 10; // (extra zoom IN) thickness of pixels CUT OFF around edges
+    var dimension = Math.max(cvs.width, cvs.height) + padding*2;
     global.canvasScale = dimension;
     global.canvasOffsetX = (cvs.width - dimension) / 2;
     global.canvasOffsetY = (cvs.height - dimension) / 2;
@@ -55,6 +89,8 @@ function fitToContainer(){
     global.ctx.fillStyle = global.backgroundColor
     global.ctx.fillRect( 0, 0, cvs.width, cvs.height )
 }
+
+
 
 // Main game loop
 let secondsPassed;
@@ -72,7 +108,7 @@ function gameLoop(timeStamp) {
     var fps = Math.round(1 / secondsPassed);
 
 
-    msPassed = Math.min(msPassed,1000)
+    msPassed = Math.min(msPassed,50)
 
     update(msPassed);
     draw(fps);
@@ -83,3 +119,4 @@ function gameLoop(timeStamp) {
 
 // Initialize the game
 init();
+

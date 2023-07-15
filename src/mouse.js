@@ -24,7 +24,5 @@ function mouseClick(e){
     updateMousePos(e)
     
     //global.debugPoint = global.mousePos
-    resetRand(hard=true)
-    global.t = 0
-    init()
+    resetGame()
 }
